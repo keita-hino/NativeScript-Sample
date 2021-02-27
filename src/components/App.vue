@@ -1,6 +1,6 @@
 <template>
     <Page>
-        <ActionBar title="Welcome to NativeScript-Vue!"/>
+        <ActionBar :title="msg"/>
         <GridLayout columns="*" rows="*">
             <Label class="message" :text="msg" col="0" row="0"/>
         </GridLayout>
@@ -8,13 +8,17 @@
 </template>
 
 <script lang="ts">
-  export default {
-    data() {
+  import { defineComponent } from '@vue/composition-api';
+
+  export default defineComponent({
+    setup(){
+      const msg = 'Hello World!';
+
       return {
-        msg: 'Hello World!'
+        msg
       }
     }
-  }
+  })
 </script>
 
 <style scoped>
