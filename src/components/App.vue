@@ -2,10 +2,10 @@
   <Page>
     <ActionBar title="Zenn記事一覧"/>
     <GridLayout columns="*" rows="*">
-      <Button v-if="!articles" text="Zennの記事取得しまっせ！" @tap="onClick" />
+      <Button v-if="!articles" text="Zennの記事取得しまっせ！" @tap="onClick()" />
       <ActivityIndicator :busy="isLoading"/>
 
-      <template v-if="articles">
+      <template v-if="articles && !articlePage">
         <ListView 
           for="article in articles" 
           :items="articles"
@@ -20,6 +20,11 @@
           </v-template>
         </ListView>
       </template>
+
+      <!-- TODO: 一時的に表示切り替えにしてるけど、後々ページ遷移できるようにしたい -->
+      <template v-if="articlePage">
+        <WebView :src="articlePage" />
+      </template>
     </GridLayout>
   </Page>
 </template>
@@ -32,6 +37,7 @@
     setup(){
       const articles = ref();
       const isLoading = ref(false);
+      const articlePage = ref('')
       
       const onClick = async() => {        
         isLoading.value = true;
@@ -44,13 +50,14 @@
 
       const titleWithEmoji = (article) => { return `${article.emoji} ${article.title}` }
 
-      const onButtonTap = () => {
-
+      const onButtonTap = (event) => {
+        articlePage.value = `https://zenn.dev/${event.item.user.username}/articles/${event.item.slug}`
       }
 
       return {
         articles,
         isLoading,
+        articlePage,
         titleWithEmoji,
         onClick,
         onButtonTap
