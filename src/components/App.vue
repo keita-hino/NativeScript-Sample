@@ -1,21 +1,46 @@
 <template>
-    <Page>
-        <ActionBar :title="msg"/>
-        <GridLayout columns="*" rows="*">
-            <Label class="message" :text="msg" col="0" row="0"/>
-        </GridLayout>
-    </Page>
+  <Page>
+    <ActionBar title="Zenn記事一覧"/>
+    <GridLayout columns="*" rows="*">
+      <Button v-if="!articles" text="Button" @tap="onClick" />
+
+      <template v-if="articles">
+        <ListView 
+          for="item in articles" 
+          :items="articles"
+          @itemTap="onButtonTap"
+        >
+          <v-template>
+            <Label :text="item.title" />
+          </v-template>
+        </ListView>
+      </template>
+    </GridLayout>
+  </Page>
 </template>
 
 <script lang="ts">
-  import { defineComponent } from '@vue/composition-api';
+  import { defineComponent, ref } from '@vue/composition-api';
+  import { fetchZennArticles } from '../api/zenn'
 
   export default defineComponent({
     setup(){
-      const msg = 'Hello World!';
+      const articles = ref();
+      
+      const onClick = async() => {        
+        // Zenn
+        const resnponse = await fetchZennArticles()
+        articles.value = resnponse.data.articles
+      }
+
+      const onButtonTap = () => {
+
+      }
 
       return {
-        msg
+        articles,
+        onClick,
+        onButtonTap
       }
     }
   })
@@ -31,6 +56,6 @@
         vertical-align: center;
         text-align: center;
         font-size: 20;
-        color: #333333;
+        color: #ffffff;
     }
 </style>
