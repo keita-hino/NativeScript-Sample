@@ -1,7 +1,9 @@
 import Vue from 'nativescript-vue'
 import App from './components/App.vue'
 import VueDevtools from 'nativescript-vue-devtools'
+import VueCompositionApi from '@vue/composition-api';
 
+Vue.use(VueCompositionApi);
 if(TNS_ENV !== 'production') {
   Vue.use(VueDevtools)
 }
