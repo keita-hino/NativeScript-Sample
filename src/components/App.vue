@@ -48,7 +48,7 @@
         isLoading.value = false;
       }
 
-      const titleWithEmoji = (article) => { return `${article.emoji} ${article.title}` }
+      const titleWithEmoji = (article) => `${article.emoji} ${article.title}`
 
       const onButtonTap = (event) => {
         articlePage.value = `https://zenn.dev/${event.item.user.username}/articles/${event.item.slug}`
