@@ -1,12 +1,9 @@
 <template>
   <Page>
     <ActionBar title="記事詳細"/>
-    <GridLayout columns="*" rows="*">
-      <!-- TODO: 一時的に表示切り替えにしてるけど、後々ページ遷移できるようにしたい -->
-      <template>
-        <WebView :src="articlePage" />
-      </template>
-    </GridLayout>
+    <template>
+      <WebView :src="articlePage" />
+    </template>
   </Page>
 </template>
 
