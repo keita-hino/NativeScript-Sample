@@ -1,11 +1,12 @@
 <template>
   <Page>
-    <ActionBar title="Zenn記事一覧"/>
+    <ActionBar title="記事一覧"/>
     <GridLayout columns="*" rows="*">
+      <!-- 後々、検索機能付けたらページも分ける or モーダルでも良いかも -->
       <Button v-if="!articles" text="Zennの記事取得しまっせ！" @tap="onClick()" />
       <ActivityIndicator :busy="isLoading"/>
 
-      <template v-if="articles && !articlePage">
+      <template v-if="articles">
         <ListView 
           for="article in articles" 
           :items="articles"
@@ -20,11 +21,6 @@
           </v-template>
         </ListView>
       </template>
-
-      <!-- TODO: 一時的に表示切り替えにしてるけど、後々ページ遷移できるようにしたい -->
-      <template v-if="articlePage">
-        <WebView :src="articlePage" />
-      </template>
     </GridLayout>
   </Page>
 </template>
@@ -32,14 +28,19 @@
 <script lang="ts">
   import { defineComponent, ref } from '@vue/composition-api';
   import { fetchZennArticles } from '../api/zenn'
+  import ArticleDetail from './ArticleDetail.vue'
+  import Vue from "nativescript-vue"
 
   export default defineComponent({
+    components: {
+      ArticleDetail
+    },
     setup(){
       const articles = ref();
       const isLoading = ref(false);
       const articlePage = ref('')
       
-      const onClick = async() => {        
+      const onClick = async() => {      
         isLoading.value = true;
         // Zenn
         const resnponse = await fetchZennArticles();
@@ -51,7 +52,11 @@
       const titleWithEmoji = (article) => `${article.emoji} ${article.title}`
 
       const onButtonTap = (event) => {
-        articlePage.value = `https://zenn.dev/${event.item.user.username}/articles/${event.item.slug}`
+        Vue.prototype.$navigateTo(ArticleDetail, {
+          props: {
+            articlePage: `https://zenn.dev/${event.item.user.username}/articles/${event.item.slug}`
+          }
+        });
       }
 
       return {
