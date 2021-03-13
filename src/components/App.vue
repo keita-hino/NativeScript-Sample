@@ -1,9 +1,9 @@
 <template>
   <Page>
-    <ActionBar title="記事一覧"/>
+    <ActionBar title="検索フォーム"/>
     <GridLayout columns="*" rows="*">
+      <SearchBar hint="Zennで検索したいキーワードを入力してください" v-model="searchText" @submit="onSearch()" />
       <!-- 後々、検索機能付けたらページも分ける or モーダルでも良いかも -->
-      <Button text="Zennの記事取得しまっせ！" @tap="onClick()" />
       <ActivityIndicator :busy="isLoading"/>
     </GridLayout>
   </Page>
@@ -11,7 +11,7 @@
 
 <script lang="ts">
   import { defineComponent, ref } from '@vue/composition-api';
-  import { fetchZennArticles } from '../api/zenn'
+  import { searchZennArticles } from '../api/zenn'
   import Articles from './Articles.vue'
   import Vue from "nativescript-vue"
 
@@ -22,11 +22,13 @@
     setup(){
       const articles = ref();
       const isLoading = ref(false);
+      const searchText = ref('')
       
-      const onClick = async() => {      
+      const onSearch = async() => {      
         isLoading.value = true;
-        // Zenn
-        const resnponse = await fetchZennArticles();
+        const encodedURI = encodeURI(searchText.value)
+        
+        const resnponse = await searchZennArticles(encodedURI);
         articles.value = resnponse.data.articles;
 
         if(articles.value){
@@ -42,8 +44,9 @@
 
       return {
         articles,
+        searchText,
         isLoading,
-        onClick,
+        onSearch
       }
     }
   })
